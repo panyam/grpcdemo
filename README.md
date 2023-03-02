@@ -38,8 +38,21 @@ brew install buf
 ```
 
 # Tooling for protobuf handling
+
+```
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+```
+
+and a couple more for enabling openapi and http/rest
+
+```
+go mod tidy
+go install \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
 
 ### Building everything

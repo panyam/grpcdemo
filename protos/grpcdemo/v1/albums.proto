@@ -1,5 +1,7 @@
 syntax = "proto3";
 import "google/protobuf/field_mask.proto";
+import "google/api/annotations.proto";
+
 
 // option go_package = "github.com/panyam/grpcdemo/protos";
 package grpcdemo.v1;
@@ -20,27 +22,59 @@ service AlbumService {
   /**
    * Create a new Album
    */
-  rpc CreateAlbum(CreateAlbumRequest) returns (CreateAlbumResponse) {}
+  rpc CreateAlbum(CreateAlbumRequest) returns (CreateAlbumResponse) {
+    option (google.api.http) = {
+      post: "/v1/albums"
+      body: "album"
+    };
+  }
 
   /**
-   * Batch gets multiple albums.
+   * Gets a single album
    */
-  rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {}
+  rpc GetAlbum(GetAlbumRequest) returns (GetAlbumResponse) {
+    option (google.api.http) = {
+      get: "/v1/albums/{id=*}"
+    };
+  }
 
   /**
    * Updates specific fields of an Album
    */
-  rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse) {}
+  rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse) {
+    // Update maps to HTTP PATCH. Resource name is mapped to a URL path.
+    // Resource is contained in the HTTP request body.
+    option (google.api.http) = {
+      // Note the URL template variable which captures the resource name of the
+      // album to update.
+      patch: "/v1/albums/{album.id=*}"
+      body: "album"
+    };
+  }
 
   /**
    * Deletes an album from our system.
    */
-  rpc DeleteAlbum(DeleteAlbumRequest) returns (DeleteAlbumResponse) {}
+  rpc DeleteAlbum(DeleteAlbumRequest) returns (DeleteAlbumResponse) {
+    // Delete maps to HTTP DELETE. Resource name maps to the URL path.
+    // There is no request body.
+    option (google.api.http) = {
+      // Note the URL template variable capturing the multi-segment name of the
+      // album resource to be deleted, such as "album123"
+      delete: "/v1/albums/{id=*}"
+    };
+  }
 
   /**
    * Finds and retrieves albums matching the particular criteria.
    */
-  rpc ListAlbums(ListAlbumsRequest) returns (ListAlbumsResponse) {}
+  rpc ListAlbums(ListAlbumsRequest) returns (ListAlbumsResponse) {
+    // List method maps to HTTP GET.
+    option (google.api.http) = {
+      // The `parent` captures the parent resource name, such as "shelves/shelf1".
+      get: "/v1/albums"
+    };
+  }
 }
 
 /**
@@ -91,15 +125,15 @@ message UpdateAlbumResponse {
 /**
  * Batch gets multiple albums.
  */
-message GetAlbumsRequest {
-  repeated string ids = 1;
+message GetAlbumRequest {
+  string id = 1;
 }
 
 /**
  * Response for an album batch get.
  */
-message GetAlbumsResponse {
-  map<string, Album> albums = 1;
+message GetAlbumResponse {
+  Album albums = 1;
 }
 
 /**
