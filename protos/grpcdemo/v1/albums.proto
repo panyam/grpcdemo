@@ -39,6 +39,15 @@ service AlbumService {
   }
 
   /**
+   * Batch gets multiple albums
+   */
+  rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {
+    option (google.api.http) = {
+      get: "/v1/albums:batchGet"
+    };
+  }
+
+  /**
    * Updates specific fields of an Album
    */
   rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse) {
@@ -123,17 +132,31 @@ message UpdateAlbumResponse {
 }
 
 /**
- * Batch gets multiple albums.
+ * Gets a single album
  */
 message GetAlbumRequest {
   string id = 1;
 }
 
 /**
- * Response for an album batch get.
+ * Response for an album get.
  */
 message GetAlbumResponse {
   Album albums = 1;
+}
+
+/**
+ * Batch gets multiple albums.
+ */
+message GetAlbumsRequest {
+  repeated string ids = 1;
+}
+
+/**
+ * Response for an album batch get.
+ */
+message GetAlbumsResponse {
+  map<string, Album> albums = 1;
 }
 
 /**

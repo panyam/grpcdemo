@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	AlbumService_CreateAlbum_FullMethodName = "/grpcdemo.v1.AlbumService/CreateAlbum"
 	AlbumService_GetAlbum_FullMethodName    = "/grpcdemo.v1.AlbumService/GetAlbum"
+	AlbumService_GetAlbums_FullMethodName   = "/grpcdemo.v1.AlbumService/GetAlbums"
 	AlbumService_UpdateAlbum_FullMethodName = "/grpcdemo.v1.AlbumService/UpdateAlbum"
 	AlbumService_DeleteAlbum_FullMethodName = "/grpcdemo.v1.AlbumService/DeleteAlbum"
 	AlbumService_ListAlbums_FullMethodName  = "/grpcdemo.v1.AlbumService/ListAlbums"
@@ -36,6 +37,8 @@ type AlbumServiceClient interface {
 	CreateAlbum(ctx context.Context, in *CreateAlbumRequest, opts ...grpc.CallOption) (*CreateAlbumResponse, error)
 	// Gets a single album
 	GetAlbum(ctx context.Context, in *GetAlbumRequest, opts ...grpc.CallOption) (*GetAlbumResponse, error)
+	// Batch gets multiple albums
+	GetAlbums(ctx context.Context, in *GetAlbumsRequest, opts ...grpc.CallOption) (*GetAlbumsResponse, error)
 	// Updates specific fields of an Album
 	UpdateAlbum(ctx context.Context, in *UpdateAlbumRequest, opts ...grpc.CallOption) (*UpdateAlbumResponse, error)
 	// Deletes an album from our system.
@@ -64,6 +67,15 @@ func (c *albumServiceClient) CreateAlbum(ctx context.Context, in *CreateAlbumReq
 func (c *albumServiceClient) GetAlbum(ctx context.Context, in *GetAlbumRequest, opts ...grpc.CallOption) (*GetAlbumResponse, error) {
 	out := new(GetAlbumResponse)
 	err := c.cc.Invoke(ctx, AlbumService_GetAlbum_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *albumServiceClient) GetAlbums(ctx context.Context, in *GetAlbumsRequest, opts ...grpc.CallOption) (*GetAlbumsResponse, error) {
+	out := new(GetAlbumsResponse)
+	err := c.cc.Invoke(ctx, AlbumService_GetAlbums_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,6 +117,8 @@ type AlbumServiceServer interface {
 	CreateAlbum(context.Context, *CreateAlbumRequest) (*CreateAlbumResponse, error)
 	// Gets a single album
 	GetAlbum(context.Context, *GetAlbumRequest) (*GetAlbumResponse, error)
+	// Batch gets multiple albums
+	GetAlbums(context.Context, *GetAlbumsRequest) (*GetAlbumsResponse, error)
 	// Updates specific fields of an Album
 	UpdateAlbum(context.Context, *UpdateAlbumRequest) (*UpdateAlbumResponse, error)
 	// Deletes an album from our system.
@@ -122,6 +136,9 @@ func (UnimplementedAlbumServiceServer) CreateAlbum(context.Context, *CreateAlbum
 }
 func (UnimplementedAlbumServiceServer) GetAlbum(context.Context, *GetAlbumRequest) (*GetAlbumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAlbum not implemented")
+}
+func (UnimplementedAlbumServiceServer) GetAlbums(context.Context, *GetAlbumsRequest) (*GetAlbumsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAlbums not implemented")
 }
 func (UnimplementedAlbumServiceServer) UpdateAlbum(context.Context, *UpdateAlbumRequest) (*UpdateAlbumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAlbum not implemented")
@@ -176,6 +193,24 @@ func _AlbumService_GetAlbum_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AlbumServiceServer).GetAlbum(ctx, req.(*GetAlbumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AlbumService_GetAlbums_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAlbumsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AlbumServiceServer).GetAlbums(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AlbumService_GetAlbums_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AlbumServiceServer).GetAlbums(ctx, req.(*GetAlbumsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -248,6 +283,10 @@ var AlbumService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAlbum",
 			Handler:    _AlbumService_GetAlbum_Handler,
+		},
+		{
+			MethodName: "GetAlbums",
+			Handler:    _AlbumService_GetAlbums_Handler,
 		},
 		{
 			MethodName: "UpdateAlbum",
