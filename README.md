@@ -17,37 +17,29 @@ Goals of this demo are:
 
 ## Getting Started
 
-### Setup a Virtualenv (for some tooling)
-
-```
-# OSX
-brew install python
-```
-
-Note: If you are in a *new* enough installation python2 may not be around so pip may fail.  If this is the case then first do
-
-```
-alias pip=pip3
-```
-
-```
-# Need once
-pip install --upgrade pip
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-pip3 install awscli --upgrade
-PATH=<path to your venv>/bin/aws:$PATH
-```
-
-Here on everything also assumes you are in this virtual environment
-
 ### Install Golang and Dependencies
 
 ```
-brew install golang goctl protobuf mkcert nss
+brew install golang goctl protobuf
+```
+
+Make sure that $HOME/go folder exists and $HOME/go/bin is in your path, by adding the following to your bashrc or bash_profile (or the rc file of your shell):
+
+export GOBIN=$HOME/go/bin
+export PATH=$GOBIN:$PATH
+
+### Install Buf
+
+You can work directly with protoc and other tools but buf makes life a lot easier
+working with generating stuff with buf so go ahead and install it:
+
+```
+brew install buf
+```
+
+# Tooling for protobuf handling
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 ```
 
 ### Building everything
@@ -59,15 +51,15 @@ make all
 
 You are ready to go.  The above make commands builds the following:
 
-1. `make gorpc`, `make gohttp`
+1. `make rpcgo`, `make httpgo`
 
 Builds golang rpc and http server stub and clients respectively
 
-2. `make pyrpc`, `make pyhttp`
+2. `make rpcpy`, `make httppy`
 
 Builds Python rpc and http server stub and clients respectively
 
-3. `make tsrpc`, `make tshttp`
+3. `make rpcts`, `make httpts`
 
 Builds TypeScript rpc and http server stub and clients respectively
 

@@ -1,0 +1,42 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+// option go_package = "github.com/panyam/grpcdemo/protos";
+
+package grpcdemo.v1;
+
+message Location {
+  string address = 1;
+}
+
+message Artist {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string id = 3;
+  string name = 4;
+  google.protobuf.Timestamp date_of_birth = 5;
+}
+
+message Album {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string id = 3;
+  string name = 4;
+  google.protobuf.Timestamp released_on = 5;
+}
+
+message Event {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string id = 3;
+  string name = 4;
+  Location location = 5;
+}
+
+message Chat {
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string id = 3;
+  string creator = 4;
+}
+

@@ -1,0 +1,149 @@
+syntax = "proto3";
+import "google/protobuf/field_mask.proto";
+
+// option go_package = "github.com/panyam/grpcdemo/protos";
+package grpcdemo.v1;
+
+import "grpcdemo/v1/models.proto";
+
+/**
+ * Our Demo service.  This spec declares the interface for a simple music album
+ * service with Albums, Albums, Events and a messaging space for fans to converse
+ * in realtime.
+ */
+
+/**
+ * The main Album server, serving as an entry into managing album lifecycles
+ * and retrieving them
+ */
+service AlbumService {
+  /**
+   * Create a new Album
+   */
+  rpc CreateAlbum(CreateAlbumRequest) returns (CreateAlbumResponse) {}
+
+  /**
+   * Batch gets multiple albums.
+   */
+  rpc GetAlbums(GetAlbumsRequest) returns (GetAlbumsResponse) {}
+
+  /**
+   * Updates specific fields of an Album
+   */
+  rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse) {}
+
+  /**
+   * Deletes an album from our system.
+   */
+  rpc DeleteAlbum(DeleteAlbumRequest) returns (DeleteAlbumResponse) {}
+
+  /**
+   * Finds and retrieves albums matching the particular criteria.
+   */
+  rpc ListAlbums(ListAlbumsRequest) returns (ListAlbumsResponse) {}
+}
+
+/**
+ * The request for (partially) updating an Album.
+ */
+message CreateAlbumRequest {
+  /**
+   * Album being updated
+   */
+  Album album = 1;
+}
+
+/**
+ * Response of an album creation.
+ */
+message CreateAlbumResponse {
+  /**
+   * Album being created
+   */
+  Album album = 1;
+}
+
+/**
+ * The request for (partially) updating an Album.
+ */
+message UpdateAlbumRequest {
+  /**
+   * Album being updated
+   */
+  Album album = 1;
+
+  /**
+   * Mask of fields being updated in this Album to make partial changes.
+   */
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+/**
+ * The request for (partially) updating an Album.
+ */
+message UpdateAlbumResponse {
+  /**
+   * Album being updated
+   */
+  Album album = 1;
+}
+
+/**
+ * Batch gets multiple albums.
+ */
+message GetAlbumsRequest {
+  repeated string ids = 1;
+}
+
+/**
+ * Response for an album batch get.
+ */
+message GetAlbumsResponse {
+  map<string, Album> albums = 1;
+}
+
+/**
+ * An album search request.  For now only paginations params are provided.
+ */
+message ListAlbumsRequest {
+  /**
+   * Instead of an offset an abstract  "page" key is provided that offers
+   * an opaque "pointer" into some offset in a result set.
+   */
+  string page_key = 1;
+
+  /**
+   * Number of results to return.
+   */
+  int32 count = 2;
+}
+
+message ListAlbumsResponse {
+  /**
+   * The list of albums found as part of this response.
+   */
+  repeated Album albums = 1;
+
+  /**
+   * The key/pointer string that subsequent List requests should pass to
+   * continue the pagination.
+   */
+  repeated string next_page_key = 2;
+}
+
+/**
+ * Request to delete an album.
+ */
+message DeleteAlbumRequest {
+  /**
+   * ID of the album to be deleted.
+   */
+  string id = 1;
+}
+
+/**
+ * Album deletion response
+ */
+message DeleteAlbumResponse {
+}
+
